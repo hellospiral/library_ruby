@@ -65,9 +65,14 @@ describe(Book) do
       expect(Book.all()).to(eq([test_book]))
     end
 
-    # it "adds authorid and bookid to authors-books table" do
-    #
-    # end
+    it "adds authorid and bookid to authors-books table" do
+      test_book = Book.new({title: 'Mike', bookid: nil})
+      test_book.save()
+      test_author = Author.new({name: 'Matt', authorid: nil})
+      test_author.save()
+      test_book.update({authorids: [test_author.authorid()]})
+      expect(test_book.authors).to(eq([test_author]))
+    end
   end
 
   describe("#delete") do

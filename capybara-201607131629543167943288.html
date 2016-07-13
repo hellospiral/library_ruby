@@ -1,4 +1,15 @@
-<form action="/books/search_result" method="post">
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Library App</title>
+  <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css'>
+</head>
+<body>
+  <div class="jumbotron">
+    <h1>Library App</h1>
+  </div>
+  <div class="container">
+    <form action="/books/search_result" method="post">
   <input type="text" name="search_term">
 
   <div class="radio-inline">
@@ -21,3 +32,7 @@
   <a href="/patrons/new" class="btn btn-primary btn-lg active" role="button">Add a Patron</a>
   <a href="/patrons" class="btn btn-warning btn-lg active" role="button">View all Patrons</a>
 </div>
+
+  </div>
+</body>
+</html>

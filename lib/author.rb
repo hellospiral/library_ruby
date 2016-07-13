@@ -2,7 +2,7 @@ class Author
   attr_reader(:name, :authorid)
   define_method(:initialize) do |attributes|
     @name = attributes[:name]
-    @authorid = attributes[:authorid]
+    @authorid = attributes[:authorid] || nil
   end
 
   define_method(:==) do |another_author|
@@ -33,5 +33,10 @@ class Author
       end
     end
     found_author
+  end
+
+  define_method(:update) do |attributes|
+    @name = attributes.fetch(:name, @name)
+    result = DB.exec("UPDATE authors SET name = '#{@name}' WHERE authorid = #{@authorid}")
   end
 end

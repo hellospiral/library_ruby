@@ -1,7 +1,19 @@
 <h1> <%= @book.title() %></h1>
 
+<ul>
+  <% @authors.each() do |author| %>
+    <li><%= author.name() %> </li>
+  <% end %>
+</ul>
+
 <div class="btn-group" role="group">
-  <a href="/books/<%= @book.bookid() %>/edit" class="btn btn-default" role="button">Edit</a>
+  <a href="/books/<%= @book.bookid() %>/edit" class="btn btn-default" role="button">Edit Book</a>
+  <a href="/books/<%= @book.bookid() %>/author/new" class="btn btn-warning" role="button">Add Author</a>
+
+  <form action="/books/<%= @book.bookid() %>" method="post">
+    <input name="_method" type="hidden" value="delete">
+    <button class="btn btn-danger" type="submit">Delete book</button>
+  </form>
 
 </div>
 <br><br>

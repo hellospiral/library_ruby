@@ -2,7 +2,7 @@ class Book
   attr_reader(:title, :bookid)
   define_method(:initialize) do |attributes|
     @title = attributes[:title]
-    @bookid = attributes[:bookid]
+    @bookid = attributes[:bookid] || nil
   end
 
   define_method(:==) do |another_book|
@@ -36,34 +36,50 @@ class Book
   end
 
   define_singleton_method(:find_by_title) do |title|
-    found_book = nil
-    Book.all().each() do |book|
-      if book.title() == title
-        found_book = book
-      end
+    result = DB.exec("SELECT * from books WHERE title LIKE '%#{title}%'")
+    found_books = []
+    result.each do |book|
+      title = book['title']
+      bookid = book['bookid'].to_i
+      found_books.push(Book.new({title: title, bookid: bookid}))
     end
-    found_book
+    found_books
   end
 
-  # define_singleton_method(:find_by_author) do |author|
-  #   found_books = DB.exec("Select * from books join author")
-  #
-  #
-  # end
+  define_singleton_method(:find_by_author) do |author|
+    result = DB.exec("SELECT b.* FROM authors a JOIN booksauthors ba ON a.authorid = ba.authorid JOIN books b ON ba.bookid = b.bookid WHERE a.name LIKE '%#{author}%';")
+    found_books = []
+    result.each do |book|
+      title = book['title']
+      bookid = book['bookid'].to_i
+      found_books.push(Book.new({title: title, bookid: bookid}))
+    end
+    found_books
+  end
 
   define_method(:update) do |attributes|
-    @title = attributes[:title]
-    @bookid = self.bookid()
+    @title = attributes.fetch(:title, @title)
     DB.exec("UPDATE books SET title = '#{@title}' WHERE bookid = #{@bookid};")
 
     attributes.fetch(:authorids, []).each do |authorid|
-      DB.exec("INSERT INTO bookauthors (bookid, authorid) VALUES (#{@bookid}, #{authorid})")
+      DB.exec("INSERT INTO booksauthors (bookid, authorid) VALUES (#{@bookid}, #{authorid});")
     end
   end
 
   define_method(:delete) do
     @bookid = self.bookid()
     DB.exec("DELETE FROM books WHERE bookid = #{@bookid};")
+  end
+
+  define_method(:authors) do
+    book_authors = []
+    results = DB.exec("SELECT a.authorid, a.name FROM booksauthors ba JOIN authors a on ba.authorid = a.authorid WHERE ba.bookid = #{self.bookid()};")
+    results.each() do |result|
+      author_id = result['authorid'].to_i()
+      name = result["name"]
+      book_authors.push(Author.new({name: name, authorid: author_id}))
+    end
+    book_authors
   end
 
 end

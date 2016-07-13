@@ -2,7 +2,7 @@ class Patron
   attr_reader(:name, :patronid)
   define_method(:initialize) do |attributes|
     @name = attributes[:name]
-    @patronid = attributes[:patronid]
+    @patronid = attributes[:patronid] || nil
   end
 
   define_method(:==) do |another_patron|

@@ -1,0 +1,13 @@
+<h2>Library Patrons</h2>
+<hr>
+
+<ul class="list-group">
+  <% @patrons.each() do |patron| %>
+    <li class="list-group-item"><a href="/patrons/<%=patron.patronid()%>"><%= patron.name() %></a></li>
+  <% end %>
+</ul>
+
+<div class="btn-group" role="group">
+  <a href="/" class="btn btn-default" role="button">Home</a>
+  <a href="/patron/new" class="btn btn-warning active" role="button">Add New Patron</a>
+</div>
