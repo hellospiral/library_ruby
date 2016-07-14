@@ -6,7 +6,7 @@
     <li class="list-group-item">
       <a href="/books/<%=book.bookid()%>"><%= book.title() %></a>
       <% if book.overdue? %>
-        OVERDUE!
+        <span class="death">OVERDUE!</span> <img src="https://lh3.googleusercontent.com/-6OJbrnVVjGE/VuD3q2KrqII/AAAAAAAAs2M/WYy23ggEanI/w426-h240/uzg8DRV.gif" alt="violent stabbing">
       <% end %>
     </li>
   <% end %>

@@ -40,6 +40,7 @@ describe('the create a book path', {type: :feature}) do
     test_patron.save()
     DB.exec("INSERT INTO checkouts (bookid, patronid, checkout_date, due_date, checkedin) VALUES (#{test_book.bookid.to_i}, #{test_patron.patronid.to_i}, '#{Date.today.prev_year.to_s}', '#{Date.today.prev_year.next_month.to_s}', 'f');")
     visit('/books')
+    save_and_open_page
     expect(page).to have_content('OVERDUE!')
   end
 
