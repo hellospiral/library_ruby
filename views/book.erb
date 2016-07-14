@@ -14,10 +14,27 @@
     <input name="_method" type="hidden" value="delete">
     <button class="btn btn-danger" type="submit">Delete book</button>
   </form>
-
 </div>
 <br><br>
+
+<% if @book.checkedout? %>
+  <h3> <%= @book.title() %> has been checked out. </h3>
+<% else %>
+  <% if @patrons.any? %>
+    <form action="/patron/checkouts/<%= @book.bookid() %>" method="post">
+      <select id = "patronid" class="" name="patronid" type = "text">
+        <% @patrons.each do |patron| %>
+          <option value="<%= patron.patronid()%>"> <%= patron.name() %> </option>
+        <% end %>
+      </select>
+      <button class="btn btn-default active" type="submit" name="checkout">Checkout</button>
+    </form>
+  <% end %>
+<% end %>
+
+<br><br>
 <hr>
+
 <div class="btn-group" role="group">
   <a href="/" class="btn btn-default active" role="button">Home</a>
 </div>

@@ -34,4 +34,16 @@ class Patron
     end
     found_patron
   end
+
+  define_method(:books) do
+    result = DB.exec("SELECT b.*, c.due_date FROM checkouts c JOIN books b on c.bookid = b.bookid WHERE patronid = #{@patronid.to_i};")
+    returned_books = []
+    result.each do |book|
+      bookid = book['bookid'].to_i
+      title = book['title']
+      due_date = book['due_date'].to_s
+      returned_books.push([Book.new({bookid: bookid, title: title}), due_date])
+    end
+    returned_books
+  end
 end

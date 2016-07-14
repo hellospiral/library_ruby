@@ -29,6 +29,7 @@ get('/books') do
 end
 
 get('/books/:id') do
+  @patrons = Patron.all()
   @book = Book.find_by_id(params.fetch("id").to_i())
   @authors = @book.authors()
   erb(:book)
@@ -44,6 +45,7 @@ patch('/books/:id') do
   title = params['title']
   @book.update({title: title})
   @authors = @book.authors()
+  @patrons = Patron.all()
   erb(:book)
 end
 
@@ -82,6 +84,7 @@ post('/books/:id/authors') do
   @book = Book.find_by_id(params.fetch('bookid').to_i())
   @book.update({authorids: [author.authorid]})
   @authors = @book.authors()
+  @patrons = Patron.all()
   erb(:book)
 end
 
@@ -94,4 +97,20 @@ post('/books/search_result') do
     @books = Book.find_by_author(search_term)
   end
   erb(:books)
+end
+
+post('/patron/checkouts/:bookid') do
+  patronid = params["patronid"].to_i
+  book = Book.find_by_id(params['bookid'].to_i)
+  book.checkout(patronid)
+  @patron = Patron.find_by_id(patronid)
+  @books = @patron.books()
+  erb(:patron)
+end
+
+get('/patrons/:patronid') do
+  patronid = params["patronid"].to_i
+  @patron = Patron.find_by_id(patronid)
+  @books = @patron.books()
+  erb(:patron)
 end

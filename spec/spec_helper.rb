@@ -4,6 +4,7 @@ require('pry')
 require('patron')
 require('book')
 require('author')
+require('date')
 
 DB = PG.connect({:dbname => "library_test"})
 

@@ -42,7 +42,7 @@ describe(Book) do
     it('returns a book by its title') do
       test_book = Book.new({title: 'Mike', bookid: nil})
       test_book.save()
-      expect(Book.find_by_title(test_book.title())).to(eq(test_book))
+      expect(Book.find_by_title(test_book.title())).to(eq([test_book]))
     end
   end
 
@@ -81,6 +81,23 @@ describe(Book) do
       test_book.save()
       test_book.delete()
       expect(Book.all()).to(eq([]))
+    end
+  end
+
+  describe('#checkedout?') do
+    it('returns true if a book is checked out') do
+      test_book = Book.new({title: 'Mike', bookid: nil})
+      test_book.save()
+      expect(test_book.checkedout?()).to(eq(false))
+    end
+  end
+
+  describe('#checkout') do
+    it('checks a book out') do
+      test_book = Book.new({title: 'Mike', bookid: nil})
+      test_book.save()
+      test_book.checkout(1)
+      expect(test_book.checkedout?).to eq(true)
     end
   end
 end

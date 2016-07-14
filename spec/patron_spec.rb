@@ -37,4 +37,15 @@ describe(Patron) do
       expect(Patron.find_by_id(test_patron.patronid())).to(eq(test_patron))
     end
   end
+
+  describe('#books') do
+    it('returns all the books and due_date for a patron') do
+      test_patron = Patron.new({name: 'Mike', patronid: nil})
+      test_patron.save()
+      test_book = Book.new({title: 'Death', bookid: nil})
+      test_book.save()
+      test_book.checkout(test_patron.patronid)
+      expect(test_patron.books()).to eq([[test_book, Date.today.next_month.to_s]])
+    end
+  end
 end

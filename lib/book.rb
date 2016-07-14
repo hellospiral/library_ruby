@@ -1,3 +1,4 @@
+require('date')
 class Book
   attr_reader(:title, :bookid)
   define_method(:initialize) do |attributes|
@@ -80,6 +81,20 @@ class Book
       book_authors.push(Author.new({name: name, authorid: author_id}))
     end
     book_authors
+  end
+
+  define_method(:checkout) do |patronid|
+    checkout_date = Date.today.to_s
+    due_date = Date.today.next_month.to_s
+    DB.exec("INSERT INTO checkouts (bookid, patronid, checkout_date, due_date, checkedin) VALUES (#{@bookid.to_i}, #{patronid.to_i}, '#{checkout_date}', '#{due_date}', 'f')")
+  end
+
+  define_method(:checkedout?) do
+    if DB.exec("SELECT * FROM checkouts WHERE bookid = #{@bookid.to_i} AND checkedin = 'f'").first
+      true
+    else
+      false
+    end
   end
 
 end

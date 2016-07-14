@@ -33,6 +33,16 @@ describe('the create a book path', {type: :feature}) do
     expect(page).to have_content("The Odyssey")
   end
 
+  it('says when a book is overdue') do
+    test_book = Book.new({title: "The Odyssey", bookid: nil})
+    test_book.save()
+    test_patron = Patron.new({name: "Joey"})
+    test_patron.save()
+    DB.exec("INSERT INTO checkouts (bookid, patronid, checkout_date, checkedin) VALUES (#{test_book.bookid.to_i}, #{test_patron.patronid.to_i}, '#{Date.today.prev_year}', 'f');")
+    visit('/books')
+    expect(page).to have_content('over due')
+  end
+
   it('views a particular book') do
     test_book = Book.new({title: "The Odyssey", bookid: nil})
     test_book.save()
@@ -60,6 +70,17 @@ describe('the create a book path', {type: :feature}) do
     click_button('Delete')
     expect(page).to have_no_content("The Odyssey")
   end
+
+  it('says when a book has been checked out') do
+    test_book = Book.new({title: "The Odyssey", bookid: nil})
+    test_book.save()
+    test_patron = Patron.new({name: "Joey"})
+    test_patron.save()
+    test_book.checkout(test_patron.patronid.to_i)
+    visit('/books/' + test_book.bookid.to_s)
+    expect(page).to have_content('The Odyssey has been checked out')
+
+  end
 end
 
 describe('the patron path', {type: :feature}) do
@@ -71,6 +92,13 @@ describe('the patron path', {type: :feature}) do
     click_link('Return Home')
     click_link('View all Patrons')
     expect(page).to have_content('Bucky')
+  end
+
+  it('shows no books are checked out for a patron the first time') do
+    test_patron = Patron.new({name: "Joey"})
+    test_patron.save()
+    visit('/patrons/' + test_patron.patronid().to_s)
+    expect(page).to have_content("You haven't checked out any books")
   end
 end
 
@@ -106,8 +134,22 @@ describe('the search path', {type: :feature}) do
     visit('/')
     fill_in('search_term', :with => 'Bucky')
     choose('Author')
-    save_and_open_page
     click_button('search')
     expect(page).to have_content('weird stuff')
   end
+end
+
+describe('the patrons books path', {type: :feature}) do
+  it('displays all the books a patron has checked out and their due date') do
+    test_patron = Patron.new({name: "Joey"})
+    test_patron.save()
+    test_book = Book.new({title: 'weird stuff'})
+    test_book.save()
+    visit('/books/' + test_book.bookid().to_s)
+    select('Joey')
+    click_button('Checkout')
+    expect(page).to have_content('weird stuff - Due Date: ' + Date.today.next_month.to_s)
+  end
+
+
 end
