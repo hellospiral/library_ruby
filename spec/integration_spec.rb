@@ -38,9 +38,9 @@ describe('the create a book path', {type: :feature}) do
     test_book.save()
     test_patron = Patron.new({name: "Joey"})
     test_patron.save()
-    DB.exec("INSERT INTO checkouts (bookid, patronid, checkout_date, checkedin) VALUES (#{test_book.bookid.to_i}, #{test_patron.patronid.to_i}, '#{Date.today.prev_year}', 'f');")
+    DB.exec("INSERT INTO checkouts (bookid, patronid, checkout_date, due_date, checkedin) VALUES (#{test_book.bookid.to_i}, #{test_patron.patronid.to_i}, '#{Date.today.prev_year.to_s}', '#{Date.today.prev_year.next_month.to_s}', 'f');")
     visit('/books')
-    expect(page).to have_content('over due')
+    expect(page).to have_content('OVERDUE!')
   end
 
   it('views a particular book') do

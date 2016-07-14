@@ -100,4 +100,24 @@ describe(Book) do
       expect(test_book.checkedout?).to eq(true)
     end
   end
+
+  describe('#overdue?') do
+    it('returns true if a book is overdue') do
+      test_book = Book.new({title: 'Mike', bookid: nil})
+      test_book.save()
+      test_patron = Patron.new({name: "Joey"})
+      test_patron.save()
+      DB.exec("INSERT INTO checkouts (bookid, patronid, checkout_date, due_date, checkedin) VALUES (#{test_book.bookid.to_i}, #{test_patron.patronid.to_i}, '#{Date.today.prev_year.to_s}', '#{Date.today.prev_year.next_month.to_s}', 'f');")
+      expect(test_book.overdue?).to eq(true)
+    end
+
+    it('returns false if a book is not overdue') do
+      test_book = Book.new({title: 'Mike', bookid: nil})
+      test_book.save()
+      test_patron = Patron.new({name: "Joey"})
+      test_patron.save()
+      DB.exec("INSERT INTO checkouts (bookid, patronid, checkout_date, checkedin) VALUES (#{test_book.bookid.to_i}, #{test_patron.patronid.to_i}, '#{Date.today}', 'f');")
+      expect(test_book.overdue?).to eq(false)
+    end
+  end
 end

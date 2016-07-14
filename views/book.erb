@@ -1,15 +1,19 @@
 <h1> <%= @book.title() %></h1>
 
-<ul>
-  <% @authors.each() do |author| %>
-    <li><%= author.name() %> </li>
-  <% end %>
-</ul>
+<% if @authors.any? %>
+  <ul class = "list-group">Authors:
+    <% @authors.each() do |author| %>
+      <li class="list-group-item"><%= author.name() %> </li>
+    <% end %>
+  </ul>
+<% end %>
 
 <div class="btn-group" role="group">
   <a href="/books/<%= @book.bookid() %>/edit" class="btn btn-default" role="button">Edit Book</a>
+  <br>
   <a href="/books/<%= @book.bookid() %>/author/new" class="btn btn-warning" role="button">Add Author</a>
 
+<br><br>
   <form action="/books/<%= @book.bookid() %>" method="post">
     <input name="_method" type="hidden" value="delete">
     <button class="btn btn-danger" type="submit">Delete book</button>
@@ -21,18 +25,20 @@
   <h3> <%= @book.title() %> has been checked out. </h3>
 <% else %>
   <% if @patrons.any? %>
+    <h3>Check out <%= @book.title() %>
+    <br>
     <form action="/patron/checkouts/<%= @book.bookid() %>" method="post">
       <select id = "patronid" class="" name="patronid" type = "text">
         <% @patrons.each do |patron| %>
           <option value="<%= patron.patronid()%>"> <%= patron.name() %> </option>
         <% end %>
       </select>
-      <button class="btn btn-default active" type="submit" name="checkout">Checkout</button>
+      <button class="btn btn-primary active" type="submit" name="checkout">Checkout</button>
     </form>
   <% end %>
 <% end %>
 
-<br><br>
+<br>
 <hr>
 
 <div class="btn-group" role="group">

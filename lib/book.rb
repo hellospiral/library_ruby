@@ -97,4 +97,12 @@ class Book
     end
   end
 
+  define_method(:overdue?) do
+    if DB.exec("SELECT * FROM checkouts WHERE bookid = #{@bookid.to_i} AND due_date < '#{Date.today.to_s}'").first
+      true
+    else
+      false
+    end
+  end
+
 end
